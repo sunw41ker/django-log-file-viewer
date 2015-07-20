@@ -107,7 +107,6 @@
                         {% include 'logfile_paginator.html' %}
                         {% endblock %}
                     {% endif %}
-                    {% if paginator.object_list %}
                     <div class="results">
                         <table id="result_list" cellspacing="0">
                             {% if header_list %}
@@ -120,19 +119,17 @@
                             </thead>
                             {% endif %}
                             <tbody>
-                            {% for line in paginator.object_list  %}
+                            {% for line in paginator  %}
                             <tr class="row1">
                                 {% for item in line %}
-                                    {% for atom in item %}
-                                        <td>{{ atom }}</td>
-                                    {% endfor %}
+                                    <td>{{ item }}</td>
                                 {% endfor %}
                             </tr>
                             {% endfor %}
                             </tbody>
                         </table>
                     </div>
-                    {% endif %}
+
                     {% if action_form and actions_on_bottom and cl.full_result_count %}{% admin_actions %}{% endif %}
                 {% endblock %}
             </form>

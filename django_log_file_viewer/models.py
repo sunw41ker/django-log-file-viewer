@@ -59,29 +59,13 @@ class LogFilesManager(object):
 
         in form of entry names header (taken from Rgex group names)
         and lines tuples list"""
-        file_dict = []
         prog = self.compile_re_index()
         # Reading amount of lines
-        line_num = from_line
         file_obj = self.get_file(logfile)
-        line_total = self.get_file_lines_count(file_obj).__len__()
-        file_obj.close()
-        if full:
-            to_line = line_total
 
-        for count in range(to_line):
-            line_num_logfile = line_total - line_num
-            try:
-                linecache.checkcache(logfile)
-                line = linecache.getline(logfile, line_num_logfile)
-                matches_set = prog.findall(str(line))
-                file_dict.append(matches_set)
-                line_num += 1
-            except IndexError:
-                # log file is shorter then LOG_FILES_PAGINATE_LINES or
-                # amount of lines smaller then from_line left
-                pass
-        return file_dict
+        text = file_obj.read()
+        matches_sets = prog.findall(text)
+        return sorted(matches_sets, reverse=True)
 
     def compile_header_from_regexp(self, regexp=None):
         """Making logfile indexes header"""

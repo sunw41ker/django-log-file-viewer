@@ -14,7 +14,7 @@ LOG_FILES_RE = getattr(
     '(?P<date>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2},\d{3})\s\[(?P<type>[A-Z]+)\]\s(?P<message>.+)'
 )
 
-LOG_FILES_PAGINATE_LINES = getattr(settings, 'LOG_FILES_PAGINATE_LINES', 40)
+LOG_FILES_PAGINATE_LINES = getattr(settings, 'LOG_FILES_PAGINATE_LINES', 20)
 
 PAGINATOR_PAGE_SEPARATOR = getattr(settings, 'PAGINATOR_PAGE_SEPARATOR', '...')
 

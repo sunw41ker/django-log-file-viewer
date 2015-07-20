@@ -1,2 +1,9 @@
-django-log-file-viewer/*.pyc
-*.pyc
+# Python bytecode:
+*.py[co]
+
+# Packaging files:
+*.egg*
+
+# Editor temp files:
+*.sw*
+*~
