@@ -16,11 +16,13 @@ class LogFilesManager(object):
         """Returns list of files in provided path"""
         file_list = []
         # List only files
+
         for f in os.listdir(path):
+            path_file = os.path.join(path, f)
             # List only readable files
-            if os.path.isfile(f) and f.endswith('.log'):
+            if os.path.isfile(path_file) and f.endswith('.log'):
                 try:
-                    fi = open(os.path.join(path, f))
+                    fi = open(path_file)
                     fi.close()
                     file_list.append(f)
                 except Exception:
