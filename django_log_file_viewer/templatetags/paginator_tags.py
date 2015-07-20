@@ -5,6 +5,7 @@ import settings
 SEP = getattr(settings, 'PAGINATOR_PAGE_SEPARATOR', '...')
 register = template.Library()
 
+
 @register.simple_tag(takes_context=True)
 def pages_sequence(context, paginated):
     """
@@ -15,6 +16,7 @@ def pages_sequence(context, paginated):
     if paginated.paginator.num_pages > 9:
         context['rebuild_paginated'] = rebuild_sequence_digg(paginated)
     return ''
+
 
 def rebuild_sequence_digg(paginated):
     """
@@ -46,13 +48,16 @@ def rebuild_sequence_digg(paginated):
     elif current_page == 4:
         output_range = [1, 2, 3, 4, 5, sep, prev_to_last_page, last_page]
     elif current_page == first_end_page:
-        output_range = [1, 2, sep, prev_to_current_page, current_page, next_to_current_page, prev_to_last_page, last_page]
+        output_range = [1, 2, sep, prev_to_current_page, current_page,
+                        next_to_current_page, prev_to_last_page, last_page]
     elif current_page == prev_to_prev_last_page:
-        output_range = [1, 2, sep, prev_to_current_page, current_page, prev_to_last_page, last_page]
+        output_range = [1, 2, sep, prev_to_current_page,
+                        current_page, prev_to_last_page, last_page]
     elif current_page == prev_to_last_page:
         output_range = [1, 2, sep, prev_to_current_page, current_page, last_page]
     elif current_page == last_page:
         output_range = [1, 2, sep, prev_to_last_page, last_page]
     elif current_page < first_end_page > 4:
-        output_range = [1, 2, sep, prev_to_current_page, current_page, next_to_current_page, sep, prev_to_last_page, last_page]
+        output_range = [1, 2, sep, prev_to_current_page, current_page,
+                        next_to_current_page, sep, prev_to_last_page, last_page]
     return output_range

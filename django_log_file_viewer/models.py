@@ -9,15 +9,16 @@ from django.db import models
 
 from settings import *
 
+
 class LogFilesManager(object):
 
     def list_logfiles(self, path):
         """Returns list of files in provided path"""
         file_list = []
         # List only files
-        for root,directory,files in os.walk(path):
-            for f in files:
-                # List only readable files
+        for f in os.listdir(path):
+            # List only readable files
+            if os.path.isfile(f) and f.endswith('.log'):
                 try:
                     fi = open(os.path.join(path, f))
                     fi.close()
@@ -31,7 +32,8 @@ class LogFilesManager(object):
         return fobj
 
     def get_file_lines_count(self, file_obj):
-        """Creates fake log file list (without real lines, but with proper length)"""
+        """Creates fake log file list (without real lines,
+            but with proper length)"""
         fake_log_file = []
         log_file_fake_lines = file_obj.xreadlines()
         count = 0
@@ -49,7 +51,8 @@ class LogFilesManager(object):
         prog = re.compile(regexp)
         return prog
 
-    def parse_log_file(self, logfile, from_line=0, to_line=LOG_FILES_PAGINATE_LINES, full=False):
+    def parse_log_file(self, logfile, from_line=0,
+                       to_line=LOG_FILES_PAGINATE_LINES, full=False):
         """Returns parsed read file
 
         in form of entry names header (taken from Rgex group names)
@@ -58,12 +61,17 @@ class LogFilesManager(object):
         prog = self.compile_re_index()
         # Reading amount of lines
         line_num = from_line
+        file_obj = self.get_file(logfile)
+        line_total = self.get_file_lines_count(file_obj).__len__()
+        file_obj.close()
         if full:
-            file_obj = self.get_file(logfile)
-            to_line = self.get_file_lines_count(file_obj).__len__()
+            to_line = line_total
+
         for count in range(to_line):
+            line_num_logfile = line_total - line_num
             try:
-                line = linecache.getline(logfile, line_num)
+                linecache.checkcache(logfile)
+                line = linecache.getline(logfile, line_num_logfile)
                 matches_set = prog.findall(str(line))
                 file_dict.append(matches_set)
                 line_num += 1
@@ -85,7 +93,9 @@ class LogFilesManager(object):
                 header_list[int(index) - 1] = group_name
         return header_list
 
+
 class string_with_title(str):
+
     def __new__(cls, value, title):
         instance = str.__new__(cls, value)
         instance._title = title
@@ -97,9 +107,12 @@ class string_with_title(str):
     __copy__ = lambda self: self
     __deepcopy__ = lambda self, memodict: self
 
+
 class LogFile(models.Model):
+
     """Hack object to be added to Django admin"""
     class Meta:
-        app_label = string_with_title("django_log_file_viewer", "Django Log Files")
+        app_label = string_with_title("django_log_file_viewer",
+                                      "Django Log Files")
     verbose_name = 'Django Log File'
     verbose_name_plural = 'Django Log Files'

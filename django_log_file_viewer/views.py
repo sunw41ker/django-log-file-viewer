@@ -1,4 +1,5 @@
-import os, csv
+import os
+import csv
 from django.http import HttpResponse
 from django.core.paginator import Paginator
 from django.shortcuts import render_to_response
@@ -8,6 +9,7 @@ from settings import *
 from models import LogFilesManager
 
 __all__ = ['logfiles_list', 'logfile_view', 'logfile_to_csv']
+
 
 @login_required
 @user_passes_test(lambda u: u.is_superuser)
@@ -21,7 +23,8 @@ def logfiles_list(request, template_name='listfiles.html'):
         for index in files_list:
             indexes[str(count)] = index
             count += 1
-    return render_to_response(template_name, {'files_list': indexes,})
+    return render_to_response(template_name, {'files_list': indexes, })
+
 
 @login_required
 @user_passes_test(lambda u: u.is_superuser)
@@ -53,13 +56,14 @@ def logfile_view(request, logfile_id, template_name='logfile.html'):
     paginated_lines.object_list = current_file_dict
     header_list = manager.compile_header_from_regexp()
     context = {
-            'header_list': header_list,
-            'file_name': filename,
-            'file_id': logfile_id,
-            'paginator': paginated_lines,
-            'page': page,
+        'header_list': header_list,
+        'file_name': filename,
+        'file_id': logfile_id,
+        'paginator': paginated_lines,
+        'page': page,
     }
     return render_to_response(template_name, context)
+
 
 @login_required
 @user_passes_test(lambda u: u.is_superuser)
@@ -85,8 +89,6 @@ def logfile_to_csv(request, logfile_id):
             row_list = []
             for atom in item:
                 for cell in atom:
-                    row_list += [unicode(cell).encode('utf8'),]
+                    row_list += [unicode(cell).encode('utf8'), ]
                 writer.writerow(row_list)
     return response
-
-

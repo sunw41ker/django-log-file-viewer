@@ -5,6 +5,7 @@ from models import LogFile
 
 
 class LogFileAdmin(admin.ModelAdmin):
+
     def has_add_permission(self, request):
         return False
 
