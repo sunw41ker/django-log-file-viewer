@@ -65,7 +65,9 @@ class LogFilesManager(object):
 
         text = file_obj.read()
         matches_sets = prog.findall(text)
-        return sorted(matches_sets, reverse=True)
+        matches_sets.reverse()
+        # return sorted(matches_sets, reverse=True)
+        return matches_sets
 
     def compile_header_from_regexp(self, regexp=None):
         """Making logfile indexes header"""
