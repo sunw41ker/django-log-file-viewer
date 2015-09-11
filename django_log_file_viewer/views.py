@@ -29,6 +29,8 @@ def logfiles_list(request, template_name='logfiles_admin.html'):
 @user_passes_test(lambda u: u.is_superuser)
 def logfile_view(request, logfile_id, template_name='logfile_admin.html'):
     """Returns a list of Log File content parsed by main regexp"""
+    search_input = request.GET.get('q')
+
     page = request.GET.get('page', '1')
     manager = LogFilesManager()
     files_list = manager.list_logfiles(LOG_FILES_DIR)
@@ -45,7 +47,12 @@ def logfile_view(request, logfile_id, template_name='logfile_admin.html'):
 
     # log_file_object = manager.get_file(logfile)
     log_file_lines = manager.parse_log_file(logfile, 0)
-    pag_log_file_lines = Paginator(log_file_lines, LOG_FILES_PAGINATE_LINES)
+    log_file_lines_filtered = log_file_lines
+    if search_input:
+        log_file_lines_filtered = [l for l in log_file_lines
+                                   if search_input in ''.join(l)]
+    pag_log_file_lines = Paginator(
+        log_file_lines_filtered, LOG_FILES_PAGINATE_LINES)
 
     try:
         paginated_lines = pag_log_file_lines.page(page)

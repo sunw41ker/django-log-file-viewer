@@ -59,6 +59,17 @@
 {% block coltype %}flex{% endblock %}
 
 {% block content %}
+
+    <div id="toolbar">
+      <form id="changelist-search" action="" method="get">
+        <div><!-- DIV needed for valid HTML -->
+          <label for="searchbar"></label>
+          <input type="text" size="40" name="q" value="" id="searchbar">
+          <input type="submit" value="Search">
+        </div>
+      </form>
+    </div>
+
     <div id="content-main">
         {% block object-tools %}
             {% if has_add_permission %}
