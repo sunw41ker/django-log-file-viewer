@@ -1,0 +1,5 @@
+include README.md
+include testdata/log/testlog.log
+include testdata/log/test/.gitignore
+recursive-include django_log_file_viewer/templatetags *
+recursive-include django_log_file_viewer/templates *
