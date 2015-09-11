@@ -17,7 +17,11 @@ class LogFilesManager(object):
         file_list = []
         # List only files
 
-        for f in os.listdir(path):
+        path_list = os.listdir(path)
+        if EXTRA_LOGS:
+            path_list.extend(EXTRA_LOGS)
+
+        for f in path_list:
             path_file = os.path.join(path, f)
             # List only readable files
             if os.path.isfile(path_file) and f.endswith('.log'):

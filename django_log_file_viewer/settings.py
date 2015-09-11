@@ -8,6 +8,7 @@ LOG_FILES_DIR = getattr(
     'LOG_FILES_DIR',
     os.path.join(APP_PATH, 'testdata', 'log')
 )
+EXTRA_LOGS = getattr(settings, 'EXTRA_LOGS', ())
 LOG_FILES_RE = getattr(
     settings,
     'LOG_FILES_RE',
