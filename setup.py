@@ -9,6 +9,7 @@ setup(name='django-log-file-viewer',
     author='Intelie',
     packages=['django_log_file_viewer'],
     package_data={'django_log_file_viewer': [
+        'templatetags/',
         'templates/*.html',
         'testdata/log/test/.gitignore', # To keep this directory (required for farther tests)
         'testdata/log/testlog.log',
