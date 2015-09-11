@@ -28,7 +28,7 @@ class LogFilesManager(object):
                 try:
                     fi = open(path_file)
                     fi.close()
-                    file_list.append(f)
+                    file_list.append(path_file)
                 except Exception:
                     pass
         return file_list
