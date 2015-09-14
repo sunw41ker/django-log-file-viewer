@@ -22,7 +22,8 @@ def logfiles_list(request, template_name='logfiles_admin.html'):
         for index in files_list:
             indexes[str(count)] = index
             count += 1
-    return render_to_response(template_name, {'files_list': indexes, })
+    context = {'files_list': indexes, 'user': request.user}
+    return render_to_response(template_name, context)
 
 
 @login_required
@@ -66,6 +67,7 @@ def logfile_view(request, logfile_id, template_name='logfile_admin.html'):
         'file_id': logfile_id,
         'paginator': paginated_lines,
         'page': page,
+        'user': request.user
     }
     return render_to_response(template_name, context)
 
