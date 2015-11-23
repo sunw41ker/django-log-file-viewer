@@ -1,8 +1,8 @@
 
 from django import template
-import settings
+from ..settings import PAGINATOR_PAGE_SEPARATOR
 
-SEP = getattr(settings, 'PAGINATOR_PAGE_SEPARATOR', '...')
+SEP = PAGINATOR_PAGE_SEPARATOR
 register = template.Library()
 
 
