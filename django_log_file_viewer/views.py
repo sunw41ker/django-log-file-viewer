@@ -1,27 +1,35 @@
+# -*- coding: utf-8 -*-
+
+# system
 import os
 import csv
+
+# django
 from django.core.paginator import Paginator, EmptyPage
 from django.shortcuts import render_to_response
-from django.http import Http404, HttpResponse
+from django.http import Http404, HttpResponse, HttpResponseBadRequest
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required, user_passes_test
 from .settings import *
+
 from models import LogFilesManager
 
 __all__ = ['logfiles_list', 'logfile_view', 'logfile_to_csv']
 
 
 @login_required
-@user_passes_test(lambda u: u.is_superuser)
+@user_passes_test(lambda u: u.is_staff)
 def logfiles_list(request, template_name='logfiles_admin.html'):
-    """Lists Log Files in settings directory"""
+    """
+    Lists Log Files in settings directory
+    """
     manager = LogFilesManager()
     files_list = manager.list_logfiles(LOG_FILES_DIR)
     indexes = {}
     if files_list:
         count = 0
         for index in files_list:
-            indexes[str(count)] = index
+            indexes[str(count)] = index[0]
             count += 1
     context = {'files_list': indexes, 'user': request.user}
     return render_to_response(template_name, context,
@@ -29,19 +37,22 @@ def logfiles_list(request, template_name='logfiles_admin.html'):
 
 
 @login_required
-@user_passes_test(lambda u: u.is_superuser)
+@user_passes_test(lambda u: u.is_staff)
 def logfile_view(request, logfile_id, template_name='logfile_admin.html'):
-    """Returns a list of Log File content parsed by main regexp"""
+    """
+    Returns a list of Log File content parsed by main regexp
+    """
     search_input = request.GET.get('q')
 
     page = request.GET.get('page', '1')
     manager = LogFilesManager()
     files_list = manager.list_logfiles(LOG_FILES_DIR)
+    file = files_list[int(logfile_id)]
     try:
-        filename = files_list[int(logfile_id)]
-        logfile = os.path.join(LOG_FILES_DIR, files_list[int(logfile_id)])
+        filename = file[0]
+        logfile = os.path.join(LOG_FILES_DIR, file[0])
     except Exception:
-        raise Http404('Arquivo de log nao existe')
+        raise Http404('File not found')
 
     try:
         page = int(page)
@@ -49,11 +60,12 @@ def logfile_view(request, logfile_id, template_name='logfile_admin.html'):
         page = 1
 
     # log_file_object = manager.get_file(logfile)
-    log_file_lines = manager.parse_log_file(logfile, 0)
+    log_file_lines = manager.parse_log_file(logfile, file[1], 0)
     log_file_lines_filtered = log_file_lines
     if search_input:
-        log_file_lines_filtered = [l for l in log_file_lines
-                                   if search_input in ''.join(l)]
+        log_file_lines_filtered = [
+            l for l in log_file_lines
+            if search_input in ''.join(l).decode('utf-8')]
     pag_log_file_lines = Paginator(
         log_file_lines_filtered, LOG_FILES_PAGINATE_LINES)
 
@@ -62,7 +74,7 @@ def logfile_view(request, logfile_id, template_name='logfile_admin.html'):
     except EmptyPage:
         paginated_lines = pag_log_file_lines.page(pag_log_file_lines.num_pages)
 
-    header_list = manager.compile_header_from_regexp()
+    header_list = manager.compile_header_from_regexp(file[1])
     context = {
         'header_list': header_list,
         'file_name': filename,
@@ -76,9 +88,11 @@ def logfile_view(request, logfile_id, template_name='logfile_admin.html'):
 
 
 @login_required
-@user_passes_test(lambda u: u.is_superuser)
+@user_passes_test(lambda u: u.is_staff)
 def logfile_to_csv(request, logfile_id):
-    """Exports selected log file to PDF"""
+    """
+    Exports selected log file to CSV
+    """
     manager = LogFilesManager()
     files_list = manager.list_logfiles(LOG_FILES_DIR)
     try:

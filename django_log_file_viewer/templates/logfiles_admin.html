@@ -41,7 +41,7 @@
                 {% trans "Home" %}
             </a>
             &rsaquo;
-            <a href="{% url log-files-list-admin %}">
+            <a href="{% url 'log-files-list-admin' %}">
                 {% trans "Log files list" %}
             </a>
             &rsaquo;
@@ -111,10 +111,10 @@
                             {% for index, file in files_list.iteritems %}
                             <tr class="row1">
                                 <td>
-                                    <a href="{% url log-file-admin index %}">{{ file }}</a>
+                                    <a href="{% url 'log-file-admin' index %}">{{ file }}</a>
                                 </td>
                                 <td>
-                                    <a href="{% url log-file-to-csv-admin index %}" >Download CSV</a>
+                                    <a href="{% url 'log-file-to-csv-admin' index %}" >Download CSV</a>
                                 </td>
                             </tr>
                             {% endfor %}

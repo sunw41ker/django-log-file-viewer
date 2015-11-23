@@ -41,15 +41,15 @@
                 {% trans "Home" %}
             </a>
             &rsaquo;
-            <a href="{% url log-files-list-admin %}">
+            <a href="{% url 'log-files-list-admin' %}">
                 {% trans "Log files list" %}
             </a>
             &rsaquo;
-            <a href="{% url log-file-admin file_id %}">
+            <a href="{% url 'log-file-admin' file_id %}">
                 {{ file_name }}
             </a>
             &rsaquo;
-            <a href="{% url log-file-to-csv-admin file_id %}">
+            <a href="{% url 'log-file-to-csv-admin' file_id %}">
                 {{ file_name }} Download as CSV
             </a>
         </div>

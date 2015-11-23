@@ -3,7 +3,6 @@ Logging reader
 """
 import os
 import re
-import linecache
 
 from django.db import models
 
@@ -13,22 +12,18 @@ from settings import *
 class LogFilesManager(object):
 
     def list_logfiles(self, path):
-        """Returns list of files in provided path"""
+        """
+        Returns  list of log files
+        """
         file_list = []
-        # List only files
-
-        path_list = os.listdir(path)
-        if EXTRA_LOGS:
-            path_list.extend(EXTRA_LOGS)
-
-        for f in path_list:
-            path_file = os.path.join(path, f)
+        for f in EXTRA_LOGS:
+            path_file = f[0]
             # List only readable files
-            if os.path.isfile(path_file) and f.endswith('.log'):
+            if os.path.isfile(path_file) and path_file.endswith('.log'):
                 try:
                     fi = open(path_file)
                     fi.close()
-                    file_list.append(path_file)
+                    file_list.append(f)
                 except Exception:
                     pass
         return file_list
@@ -38,8 +33,10 @@ class LogFilesManager(object):
         return fobj
 
     def get_file_lines_count(self, file_obj):
-        """Creates fake log file list (without real lines,
-            but with proper length)"""
+        """
+        Creates fake log file list (without real lines,
+        but with proper length)
+        """
         fake_log_file = []
         log_file_fake_lines = file_obj.xreadlines()
         count = 0
@@ -51,19 +48,23 @@ class LogFilesManager(object):
         return fake_log_file
 
     def compile_re_index(self, regexp=None):
-        """Creating Regexp prog to match entries"""
+        """
+        Creating Regexp prog to match entries
+        """
         if not regexp:
             regexp = LOG_FILES_RE
         prog = re.compile(regexp)
         return prog
 
-    def parse_log_file(self, logfile, from_line=0,
+    def parse_log_file(self, logfile, regexp, from_line=0,
                        to_line=LOG_FILES_PAGINATE_LINES, full=False):
-        """Returns parsed read file
+        """
+        Returns parsed read file
 
         in form of entry names header (taken from Rgex group names)
-        and lines tuples list"""
-        prog = self.compile_re_index()
+        and lines tuples list
+        """
+        prog = self.compile_re_index(regexp)
         # Reading amount of lines
         file_obj = self.get_file(logfile)
 
@@ -75,7 +76,7 @@ class LogFilesManager(object):
 
     def compile_header_from_regexp(self, regexp=None):
         """Making logfile indexes header"""
-        prog = self.compile_re_index()
+        prog = self.compile_re_index(regexp)
         header_length = prog.groups
         header_list = []
         if prog.groupindex:
