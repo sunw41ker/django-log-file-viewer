@@ -12,7 +12,7 @@ from django.template import RequestContext
 from django.contrib.auth.decorators import login_required, user_passes_test
 from .settings import *
 
-from models import LogFilesManager
+from .models import LogFilesManager
 
 __all__ = ['logfiles_list', 'logfile_view', 'logfile_to_csv']
 
